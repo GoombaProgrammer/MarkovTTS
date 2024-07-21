@@ -133,7 +133,7 @@ def generate_sequence_from_gradio(input_prompt, length, audio_seed, random_seed)
         mfcc_seed = get_mfcc(audio_seed)
     else:
         mfcc_seed = None
-    input_prompt = input_prompt.lower().replace(".", "").replace(",", "").replace("-", "_").replace("/", "_").replace("?", "_")
+    input_prompt = input_prompt.lower().replace(".", "").replace("-", "_").replace("/", "_").replace("?", "_")
     # split input prompt into words
     words = input_prompt.split(" ")
     # get the last word
@@ -177,6 +177,8 @@ def generate_sequence_from_gradio(input_prompt, length, audio_seed, random_seed)
                     current_index = 0
                 maximum_index = min(current_index + 5, len(list(markov_chain.keys())))
                 ind = random.randint(current_index, maximum_index)
+                if ind >= len(list(markov_chain.keys())):
+                    ind = random.randint(0, len(list(markov_chain.keys())) - 1)
                 next_mfcc = markov_chain[list(markov_chain.keys())[ind]][0]
                 distance = levenshtein_distance(last_mfcc, next_mfcc)
                 if (best_distance is None or distance < best_distance) and distance != 0:
