@@ -175,14 +175,13 @@ def generate_sequence_from_gradio(input_prompt, length, audio_seed, random_seed)
             for i in range(tries_left):
                 if current_index >= len(list(markov_chain.keys())):
                     current_index = 0
-                ind = random.randint(current_index, len(list(markov_chain.keys())) - 1)
+                maximum_index = min(current_index + 5, len(list(markov_chain.keys())))
+                ind = random.randint(current_index, maximum_index)
                 next_mfcc = markov_chain[list(markov_chain.keys())[ind]][0]
                 distance = levenshtein_distance(last_mfcc, next_mfcc)
-                if best_distance is None or distance < best_distance:
+                if (best_distance is None or distance < best_distance) and distance != 0:
                     best_distance = distance
                     best_index = ind
-                if best_distance == 0:
-                    break
             current_index = best_index
             # add the mfcc to the sequence
             sequence.append(markov_chain[list(markov_chain.keys())[best_index]][0])
